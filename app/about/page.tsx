@@ -5,6 +5,7 @@ import React, { useState } from "react";
 
 export default function About() {
   const [activeFact, setActiveFact] = useState<string | null>(null);
+  const [tableMode, setTableMode] = useState<"reduced" | "complete">("reduced");
 
   const INPUTS = [
     "Durasi", // 0
@@ -230,65 +231,204 @@ export default function About() {
           </div>
         </section>
 
-        {/* Rule Base Table */}
+        {/* Decision Tables Section */}
         <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <h2 className="text-2xl font-bold p-6 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-            📜 Rule Base (Aturan)
-          </h2>
+          <div className="p-6 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              📜 Tabel Keputusan (Decision Table)
+            </h2>
+
+            {/* Toggle Button */}
+            <div className="bg-gray-200 dark:bg-gray-800 p-1 rounded-lg flex items-center">
+              <button
+                onClick={() => setTableMode("reduced")}
+                className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${
+                  tableMode === "reduced"
+                    ? "bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-300 shadow-sm"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                }`}
+              >
+                Tabel Reduksi (Simplified)
+              </button>
+              <button
+                onClick={() => setTableMode("complete")}
+                className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${
+                  tableMode === "complete"
+                    ? "bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-300 shadow-sm"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                }`}
+              >
+                Tabel Lengkap (Extended)
+              </button>
+            </div>
+          </div>
+
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider">
-                  <th className="p-4 font-semibold border-b dark:border-gray-700">
-                    Kode
-                  </th>
-                  <th className="p-4 font-semibold border-b dark:border-gray-700">
-                    Kondisi (IF)
-                  </th>
-                  <th className="p-4 font-semibold border-b dark:border-gray-700">
-                    Hasil (THEN)
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                <RuleRow
-                  code="R1"
-                  condition="F1 + F2 + F3 + F4"
-                  result="Kecanduan Akut 🚨"
-                  desc="Semua indikator terpenuhi"
-                />
-                <RuleRow
-                  code="R2"
-                  condition="F3 + F2"
-                  result="Escapism 🏃♂️"
-                  desc="Disfungsi Hidup + Masalah Mental"
-                />
-                <RuleRow
-                  code="R3"
-                  condition="F1 + F4"
-                  result="Physical Burnout 🏥"
-                  desc="Main Lama + Sakit Fisik"
-                />
-                <RuleRow
-                  code="R4"
-                  condition="TopUp + Emosi"
-                  result="Toxic Spender 💸"
-                  desc="Boros + Emosional"
-                />
-                <RuleRow
-                  code="R5"
-                  condition="F1 + (Not F3)"
-                  result="Hardcore Gamer 🕹️"
-                  desc="Main Lama tapi Hidup Aman"
-                />
-                <RuleRow
-                  code="R6"
-                  condition="Else / Lainnya"
-                  result="Normal / Casual ✅"
-                  desc="Tidak memenuhi kriteria bahaya"
-                />
-              </tbody>
-            </table>
+            {tableMode === "reduced" ? (
+              <table className="w-full text-left border-collapse animate-in fade-in duration-300">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider">
+                    <th className="p-4 font-semibold border-b dark:border-gray-700">
+                      Kode Rule
+                    </th>
+                    <th className="p-4 font-semibold border-b dark:border-gray-700">
+                      Kondisi (IF)
+                    </th>
+                    <th className="p-4 font-semibold border-b dark:border-gray-700">
+                      Hasil Diagnosa (THEN)
+                    </th>
+                    <th className="p-4 font-semibold border-b dark:border-gray-700">
+                      Keterangan
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <RuleRow
+                    code="R1"
+                    condition="F1 AND F2 AND F3 AND F4"
+                    result="Kecanduan Akut 🚨"
+                    desc="Semua indikator terpenuhi"
+                  />
+                  <RuleRow
+                    code="R2"
+                    condition="F3 AND F2"
+                    result="Escapism 🏃♂️"
+                    desc="Disfungsi Hidup, Mental bermasalah, Fisik/Durasi bisa bervariasi"
+                  />
+                  <RuleRow
+                    code="R3"
+                    condition="F1 AND F4"
+                    result="Physical Burnout 🏥"
+                    desc="Durasi tinggi menyebabkan sakit fisik"
+                  />
+                  <RuleRow
+                    code="R4"
+                    condition="TopUp AND Emosi"
+                    result="Toxic Spender 💸"
+                    desc="Input spesifik: Boros + Emosional"
+                  />
+                  <RuleRow
+                    code="R5"
+                    condition="F1 AND (NOT F3)"
+                    result="Hardcore Gamer 🕹️"
+                    desc="Fungsional meskipun durasi tinggi"
+                  />
+                  <RuleRow
+                    code="R6"
+                    condition="ELSE"
+                    result="Normal / Casual ✅"
+                    desc="Tidak memenuhi pola berbahaya lainnya"
+                  />
+                </tbody>
+              </table>
+            ) : (
+              <table className="w-full text-center border-collapse animate-in fade-in duration-300">
+                <thead>
+                  <tr className="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider">
+                    <th className="p-3 border-b dark:border-gray-700 w-16">
+                      Rule
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-purple-50 dark:bg-purple-900/20 text-purple-700 min-w-[30px]">
+                      F1
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-purple-50 dark:bg-purple-900/20 text-purple-700 min-w-[30px]">
+                      F2
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-purple-50 dark:bg-purple-900/20 text-purple-700 min-w-[30px]">
+                      F3
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-purple-50 dark:bg-purple-900/20 text-purple-700 min-w-[30px]">
+                      F4
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-gray-100 dark:bg-gray-700">
+                      TopUp
+                    </th>
+                    <th className="p-3 border-b border-r dark:border-gray-700 dark:border-r-gray-700 bg-gray-100 dark:bg-gray-700">
+                      Emosi
+                    </th>
+                    <th className="p-3 border-b dark:border-gray-700 text-left">
+                      Hasil Diagnosa
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 text-sm">
+                  {/* R1 */}
+                  <DecisionRow
+                    r="R1"
+                    f1="Y"
+                    f2="Y"
+                    f3="Y"
+                    f4="Y"
+                    res="Kecanduan Akut"
+                    color="text-red-600"
+                  />
+
+                  {/* R2 - Variants because R2 ignores F1 and F4 if F2&F3 are true */}
+                  <DecisionRow
+                    r="R2"
+                    f1="-"
+                    f2="Y"
+                    f3="Y"
+                    f4="-"
+                    res="Escapism"
+                    color="text-orange-500"
+                  />
+
+                  {/* R3 */}
+                  <DecisionRow
+                    r="R3"
+                    f1="Y"
+                    f2="-"
+                    f3="-"
+                    f4="Y"
+                    res="Physical Burnout"
+                    color="text-yellow-600"
+                  />
+
+                  {/* R4 - Specific Inputs */}
+                  <DecisionRow
+                    r="R4"
+                    f1="-"
+                    f2="-"
+                    f3="-"
+                    f4="-"
+                    tu="Y"
+                    em="Y"
+                    res="Toxic Spender"
+                    color="text-purple-600"
+                  />
+
+                  {/* R5 */}
+                  <DecisionRow
+                    r="R5"
+                    f1="Y"
+                    f2="-"
+                    f3="N"
+                    f4="-"
+                    res="Hardcore Gamer"
+                    color="text-blue-600"
+                  />
+
+                  {/* R6 */}
+                  <DecisionRow
+                    r="R6"
+                    f1="N"
+                    f2="N"
+                    f3="N"
+                    f4="N"
+                    res="Normal / Casual"
+                    color="text-green-600"
+                  />
+                </tbody>
+                <tfoot className="text-xs text-gray-400 bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                    <td colSpan={8} className="p-3 text-center italic">
+                      Y = Ya/True, N = Tidak/False, - = Tidak Relevan/Don't Care
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            )}
           </div>
         </section>
       </main>
@@ -369,6 +509,65 @@ function DiagnosisBadge({ color, label }: { color: string; label: string }) {
     >
       {label}
     </div>
+  );
+}
+
+function DecisionRow({
+  r,
+  f1,
+  f2,
+  f3,
+  f4,
+  tu = "-",
+  em = "-",
+  res,
+  color,
+}: {
+  r: string;
+  f1?: string;
+  f2?: string;
+  f3?: string;
+  f4?: string;
+  tu?: string;
+  em?: string;
+  res: string;
+  color: string;
+}) {
+  return (
+    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+      <td className="p-3 font-bold text-gray-400">{r}</td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${f1 === "Y" ? "font-bold text-purple-700 bg-purple-50 dark:bg-purple-900/30" : ""}`}
+      >
+        {f1}
+      </td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${f2 === "Y" ? "font-bold text-purple-700 bg-purple-50 dark:bg-purple-900/30" : ""}`}
+      >
+        {f2}
+      </td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${f3 === "Y" ? "font-bold text-purple-700 bg-purple-50 dark:bg-purple-900/30" : ""}`}
+      >
+        {f3}
+      </td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${f4 === "Y" ? "font-bold text-purple-700 bg-purple-50 dark:bg-purple-900/30" : ""}`}
+      >
+        {f4}
+      </td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${tu === "Y" ? "font-bold text-gray-700 bg-gray-100 dark:bg-gray-700" : ""}`}
+      >
+        {tu}
+      </td>
+      <td
+        className={`p-3 border-r dark:border-gray-700 ${em === "Y" ? "font-bold text-gray-700 bg-gray-100 dark:bg-gray-700" : ""}`}
+      >
+        {em}
+      </td>
+      <td className={`p-3 font-bold text-left ${color}`}>{res}</td>
+    </tr>
   );
 }
 
